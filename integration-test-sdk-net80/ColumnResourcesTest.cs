@@ -42,7 +42,10 @@ namespace integration_test_sdk_net80
             PaginatedResult<Column> columnsResult = smartsheet.SheetResources.ColumnResources.ListColumns(sheetId, new ColumnInclusion[] { ColumnInclusion.FILTERS });
             Assert.IsTrue(columnsResult.TotalCount == 4);
             Assert.IsTrue(columnsResult.Data.Count == 4);
-            return columnsResult.Data[3].Id.Value;
+
+            var columnsResultThirdId = columnsResult.Data[3].Id;
+            Assert.IsNotNull(columnsResultThirdId);
+            return columnsResultThirdId.Value;
         }
 
         private static void UpdateColumn(SmartsheetClient smartsheet, long sheetId, long columnId)
@@ -65,7 +68,11 @@ namespace integration_test_sdk_net80
             IList<Column> columnsAdded = smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { col });
             Assert.IsTrue(columnsAdded.Count == 1);
             Assert.IsNotNull(columnsAdded[0].Formula);
-            return columnsAdded[0].Id.Value;
+
+            var columnsAddedId = columnsAdded[0].Id;
+            Assert.IsNotNull(columnsAddedId);
+
+            return columnsAddedId.Value;
         }
 
         private static void ClearColumnFormula(SmartsheetClient smartsheet, long sheetId, long columnId)
@@ -86,6 +93,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

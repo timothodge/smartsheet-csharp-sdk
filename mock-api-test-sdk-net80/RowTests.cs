@@ -45,9 +45,10 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA, rowB });
 
-            Row row = addedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals("Apple")).FirstOrDefault();
+            Row? row = addedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => c.Value.Equals("Apple"));
 
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -89,9 +90,9 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA, rowB });
 
-            Row row = addedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => Convert.ToInt32(c.Value) == 100).FirstOrDefault();
-
+            Row? row = addedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => Convert.ToInt32(c.Value) == 100);
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -133,9 +134,10 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA, rowB });
 
-            Row row = addedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals(true)).FirstOrDefault();
+            Row? row = addedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => c.Value.Equals(true));
 
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -162,8 +164,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
 
-            Cell cell = addedRows[0].Cells.Where(c => c.Formula.Equals("=SUM([Column2]3, [Column2]3, [Column2]4)")).FirstOrDefault();
-
+            Cell? cell = addedRows[0].Cells.FirstOrDefault(c => c.Formula.Equals("=SUM([Column2]3, [Column2]3, [Column2]4)"));
+            Assert.IsNotNull(cell);
             Assert.AreEqual(102, cell.ColumnId);
         }
 
@@ -195,7 +197,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
 
-            Cell cell = addedRows[0].Cells.Where(c => c.Value.Equals("Google")).FirstOrDefault();
+            Cell? cell = addedRows[0].Cells.FirstOrDefault(c => c.Value.Equals("Google"));
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(101, cell.ColumnId);
@@ -229,8 +232,9 @@ namespace mock_api_test_sdk_net80
             };
 
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
-
-            Cell cell = addedRows[0].Cells.Where(c => c.Value.Equals("Sheet3")).FirstOrDefault();
+            var cellsValue = addedRows[0].Cells;
+            Cell? cell = cellsValue.FirstOrDefault(c => c.Value.Equals("Sheet3"));
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(102, cell.ColumnId);
@@ -265,7 +269,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
 
-            Cell cell = addedRows[0].Cells.Where(c => c.Value.Equals("Report8")).FirstOrDefault();
+            Cell? cell = addedRows[0].Cells.FirstOrDefault(c => c.Value.Equals("Report8"));
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(102, cell.ColumnId);
@@ -393,10 +398,11 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
 
-            Row row = addedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals("Apple")).FirstOrDefault();
+            Row? row = addedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => c.Value.Equals("Apple"));
 
-            Assert.AreEqual(1, row.RowNumber);
+            Assert.AreEqual(1, row?.RowNumber);
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -424,10 +430,11 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> addedRows = ss.SheetResources.RowResources.AddRows(1, new Row[] { rowA });
 
-            Row row = addedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals("Apple")).FirstOrDefault();
+            Row? row = addedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => c.Value.Equals("Apple"));
 
-            Assert.AreEqual(100, row.RowNumber);
+            Assert.AreEqual(100, row?.RowNumber);
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -471,9 +478,9 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA, rowB });
 
-            Row row = updatedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals("Apple")).FirstOrDefault();
-
+            Row? row = updatedRows.Where(r => r.Id == 10).FirstOrDefault();
+            Cell? cell = row?.Cells.Where(c => c.Value.Equals("Apple")).FirstOrDefault();
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -515,11 +522,10 @@ namespace mock_api_test_sdk_net80
             };
 
             // Update rows in sheet
-            IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA, rowB });
-
-            Row row = updatedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => Convert.ToInt32(c.Value) == 100).FirstOrDefault();
-
+            IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, [rowA, rowB]);
+            Row? row = updatedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => Convert.ToInt32(c.Value) == 100);
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -563,9 +569,9 @@ namespace mock_api_test_sdk_net80
             // Update rows in sheet
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA, rowB });
 
-            Row row = updatedRows.Where(r => r.Id == 10).FirstOrDefault();
-            Cell cell = row.Cells.Where(c => c.Value.Equals(true)).FirstOrDefault();
-
+            Row? row = updatedRows.FirstOrDefault(r => r.Id == 10);
+            Cell? cell = row?.Cells.FirstOrDefault(c => c.Value.Equals(true));
+            Assert.IsNotNull(cell);
             Assert.AreEqual(101, cell.ColumnId);
         }
 
@@ -592,8 +598,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA });
 
-            Cell cell = updatedRows[0].Cells.Where(c => c.Formula.Equals("=SUM([Column2]3, [Column2]3, [Column2]4)")).FirstOrDefault();
-
+            Cell? cell = updatedRows[0].Cells.Where(c => c.Formula.Equals("=SUM([Column2]3, [Column2]3, [Column2]4)")).FirstOrDefault();
+            Assert.IsNotNull(cell);
             Assert.AreEqual(102, cell.ColumnId);
         }
 
@@ -626,7 +632,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA });
 
-            Cell cell = updatedRows[0].Cells.Where(c => c.Value.Equals("Google")).FirstOrDefault();
+            Cell? cell = updatedRows[0].Cells.Where(c => c.Value.Equals("Google")).FirstOrDefault();
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(101, cell.ColumnId);
@@ -661,8 +668,10 @@ namespace mock_api_test_sdk_net80
             };
 
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA });
-
-            Cell cell = updatedRows[0].Cells.Where(c => c.Value.Equals("Sheet3")).FirstOrDefault();
+            var cells = updatedRows[0].Cells;
+            Assert.IsNotNull(cells);
+            Cell? cell = cells.FirstOrDefault(c => c.Value.Equals("Sheet3"));
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(102, cell.ColumnId);
@@ -698,7 +707,8 @@ namespace mock_api_test_sdk_net80
 
             IList<Row> updatedRows = ss.SheetResources.RowResources.UpdateRows(1, new Row[] { rowA });
 
-            Cell cell = updatedRows[0].Cells.Where(c => c.Value.Equals("Report8")).FirstOrDefault();
+            Cell? cell = updatedRows[0].Cells.FirstOrDefault(c => c.Value.Equals("Report8"));
+            Assert.IsNotNull(cell);
             Hyperlink link = cell.Hyperlink;
 
             Assert.AreEqual(102, cell.ColumnId);

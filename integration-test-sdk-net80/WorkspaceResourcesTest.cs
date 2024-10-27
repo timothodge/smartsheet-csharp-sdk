@@ -43,10 +43,11 @@ namespace integration_test_sdk_net80
             bool contains = false;
             foreach (Workspace ws in workspaceResult.Data)
             {
+                Assert.IsNotNull(ws.Id);
                 if (ws.Id.Value == workspaceId)
                 {
                     contains = true;
-                    break;    
+                    break;
                 }
             }
             Assert.IsTrue(contains);
@@ -54,6 +55,7 @@ namespace integration_test_sdk_net80
         private static void GetWorkspace(SmartsheetClient smartsheet, long workspaceId)
         {
             Workspace workspace = smartsheet.WorkspaceResources.GetWorkspace(workspaceId, true, new WorkspaceInclusion[] { WorkspaceInclusion.SOURCE });
+            Assert.IsNotNull(workspace.Id);
             Assert.IsTrue(workspace.Id.Value == workspaceId);
         }
 
@@ -72,6 +74,7 @@ namespace integration_test_sdk_net80
 
             Workspace createdWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(workspace);
             Assert.IsTrue(createdWorkspace.Name == "workspace");
+            Assert.IsNotNull(createdWorkspace.Id);
             return createdWorkspace.Id.Value;
         }
     }

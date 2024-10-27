@@ -12,6 +12,7 @@ namespace mock_api_test_sdk_net80
         {
             SmartsheetClient ss = HelperFunctions.SetupClient("List Sights");
             PaginatedResult<Sight> sights = ss.SightResources.ListSights();
+            Assert.IsNotNull(sights?.TotalCount);
             Assert.AreEqual(6, (long)sights.TotalCount);
         }
 
@@ -20,6 +21,7 @@ namespace mock_api_test_sdk_net80
         {
             SmartsheetClient ss = HelperFunctions.SetupClient("Get Sight");
             Sight sight = ss.SightResources.GetSight(52);
+            Assert.IsNotNull(sight?.Id);
             Assert.AreEqual(52, (long)sight.Id);
         }
 
@@ -60,6 +62,7 @@ namespace mock_api_test_sdk_net80
         {
             SmartsheetClient ss = HelperFunctions.SetupClient("Get Sight Publish Status");
             SightPublish publish = ss.SightResources.GetPublishStatus(812);
+            Assert.IsNotNull(publish.ReadOnlyFullEnabled);
             Assert.IsTrue(publish.ReadOnlyFullEnabled.Value);
         }
 

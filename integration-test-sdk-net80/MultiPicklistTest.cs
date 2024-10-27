@@ -6,7 +6,7 @@ namespace integration_test_sdk_net80
     public class MultiPicklistTest : TestResources
     {
         private long sheetId;
-        IList<Column> addCols;
+        IList<Column>? addCols;
 
         [TestInitialize]
         public void TestInitialize()
@@ -43,12 +43,14 @@ namespace integration_test_sdk_net80
                 Type = ColumnType.MULTI_PICKLIST,
                 Options = new string[] { "Cat", "Rat", "Bat" }
             };
+            Assert.IsNotNull(smartsheet);
             addCols = smartsheet.SheetResources.ColumnResources.AddColumns(sheetId, new Column[] { mpl });
             Assert.AreEqual(addCols.Count, 1);
         }
 
         private void TestListMultiPicklistColumn()
         {
+            Assert.IsNotNull(smartsheet);
             PaginatedResult<Column> cols = smartsheet.SheetResources.ColumnResources.ListColumns(sheetId);
             // should be TEXT_NUMBER since level not specified
             Assert.AreEqual(cols.Data[0].Type, ColumnType.TEXT_NUMBER);
@@ -60,6 +62,7 @@ namespace integration_test_sdk_net80
 
         private void TestAddMultiPicklistRow()
         {
+            Assert.IsNotNull(addCols);
             Cell[] insert_cells = new Cell[]
             {
                 new Cell
@@ -73,18 +76,23 @@ namespace integration_test_sdk_net80
                 ToTop = true,
                 Cells = insert_cells
             };
+            Assert.IsNotNull(smartsheet);
             IList<Row> insert_rows = smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { insert_row });
             Assert.AreEqual(insert_rows.Count, 1);
         }
 
         private void TestGetMultiPicklistSheet()
         {
+            Assert.IsNotNull(addCols);
+            var addColsId = addCols[0].Id;
+            Assert.IsNotNull(addColsId);
+            Assert.IsNotNull(smartsheet);
             Sheet mpl = smartsheet.SheetResources.GetSheet(sheetId,
-             new List<SheetLevelInclusion> { SheetLevelInclusion.OBJECT_VALUE }, columnIds: new List<long> { addCols[0].Id.Value });
+             new List<SheetLevelInclusion> { SheetLevelInclusion.OBJECT_VALUE }, columnIds: new List<long> { addColsId.Value });
             // should be TEXT_NUMBER since level not specified
             Assert.AreEqual(mpl.Rows[0].Cells[0].ObjectValue.GetType(), typeof(StringObjectValue));
 
-            mpl = smartsheet.SheetResources.GetSheet(sheetId, new List<SheetLevelInclusion> { SheetLevelInclusion.OBJECT_VALUE }, columnIds: new List<long> { addCols[0].Id.Value }, level: 2);
+            mpl = smartsheet.SheetResources.GetSheet(sheetId, new List<SheetLevelInclusion> { SheetLevelInclusion.OBJECT_VALUE }, columnIds: new List<long> { addColsId.Value }, level: 2);
             // should be MULTI_PICKLIST since level 2 specified
             Assert.AreEqual(mpl.Rows[0].Cells[0].ObjectValue.GetType(), typeof(MultiPicklistObjectValue));
         }

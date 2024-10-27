@@ -15,6 +15,7 @@ namespace integration_test_sdk_net80
 
             Discussion discussionToCreate = new Discussion.CreateDiscussionBuilder("A discussion", new Comment.AddCommentBuilder("a comment").Build()).Build();
             Discussion createdDiscussion = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(sheetId, discussionToCreate);
+            Assert.IsNotNull(createdDiscussion.Id);
             long createdDiscussionId = createdDiscussion.Id.Value;
             string path = "../../../../integration-test-sdk-net80/TestFile.txt";
             Discussion createdDiscussionWithFile = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, discussionToCreate, path, null);
@@ -24,8 +25,14 @@ namespace integration_test_sdk_net80
             PaginatedResult<Discussion> discussions = smartsheet.SheetResources.DiscussionResources.ListDiscussions(sheetId, new DiscussionInclusion[] { DiscussionInclusion.COMMENTS, DiscussionInclusion.ATTACHMENTS });
             Assert.IsTrue(discussions.TotalCount == 2);
             Assert.IsTrue(discussions.Data.Count == 2);
-            Assert.IsTrue(discussions.Data[0].Id.Value == createdDiscussion.Id.Value || discussions.Data[0].Id.Value == createdDiscussionWithFile.Id.Value);
-            Assert.IsTrue(discussions.Data[1].Id.Value == createdDiscussion.Id.Value || discussions.Data[1].Id.Value == createdDiscussionWithFile.Id.Value);
+            var discussionIds = discussions.Data.Select(d => d.Id.Value).ToList();
+            var discussionDataFirst = discussions.Data[0].Id;
+            var discussionDataSecond = discussions.Data[1].Id;
+            Assert.IsNotNull(discussionDataFirst);
+            Assert.IsNotNull(discussionDataSecond);
+            Assert.IsNotNull(createdDiscussionWithFile.Id);
+            Assert.IsTrue(discussionDataFirst.Value == createdDiscussion.Id.Value || discussionDataFirst.Value == createdDiscussionWithFile.Id.Value);
+            Assert.IsTrue(discussionDataSecond.Value == createdDiscussion.Id.Value || discussionDataSecond.Value == createdDiscussionWithFile.Id.Value);
 
 
             Discussion getDiscussionWithFile = smartsheet.SheetResources.DiscussionResources.GetDiscussion(sheetId, createdDiscussionWithFile.Id.Value);
@@ -37,8 +44,9 @@ namespace integration_test_sdk_net80
             Row row = new Row.AddRowBuilder(true, null, null, null, null).Build();
             IList<Row> rows = smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { row });
             Assert.IsTrue(rows.Count == 1);
-            Assert.IsTrue(rows[0].Id.HasValue);
-            long rowId = rows[0].Id.Value;
+            var rowsId = rows[0].Id;
+            Assert.IsNotNull(rowsId);
+            long rowId = rowsId.Value;
             Comment comment = new Comment.AddCommentBuilder("a comment!").Build();
             Discussion discussionToCreateOnRow = new Discussion.CreateDiscussionBuilder("discussion on row", comment).Build();
             Discussion discussionCreatedOnRow = smartsheet.SheetResources.RowResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, rowId, discussionToCreateOnRow, path, null);
@@ -61,6 +69,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

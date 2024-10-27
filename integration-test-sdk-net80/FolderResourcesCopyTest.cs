@@ -31,7 +31,7 @@ namespace integration_test_sdk_net80
             Folder newCopiedFolder = smartsheet.FolderResources.CopyFolder(createdFolderInFolderId, destination, new FolderCopyInclusion[] { FolderCopyInclusion.ALL }, new FolderRemapExclusion[] { FolderRemapExclusion.CELL_LINKS });
 
             Assert.IsTrue(newCopiedFolder.Name == "SubFolder1Copy");
-
+            Assert.IsNotNull(newCopiedFolder.Id);
             long copiedFolderId = newCopiedFolder.Id.Value;
 
             Folder copiedFolder = smartsheet.FolderResources.GetFolder(copiedFolderId);
@@ -68,12 +68,14 @@ namespace integration_test_sdk_net80
         private static long CreateFolderInFolder(SmartsheetClient smartsheet, long createdFolderInHomeId, string folderName)
         {
             Folder createdFolderInFolder = smartsheet.FolderResources.CreateFolder(createdFolderInHomeId, new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInFolder.Id);
             return createdFolderInFolder.Id.Value;
         }
 
         private static long CreateFolderInHome(SmartsheetClient smartsheet, string folderName)
         {
             Folder createdFolderInHome = smartsheet.HomeResources.FolderResources.CreateFolder(new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInHome.Id);
             return createdFolderInHome.Id.Value;
         }
     }

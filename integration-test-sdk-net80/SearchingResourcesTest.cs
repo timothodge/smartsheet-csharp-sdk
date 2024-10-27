@@ -53,7 +53,9 @@ namespace integration_test_sdk_net80
         private static void AddValuesToSheet(SmartsheetClient smartsheet, long sheetId, string query)
         {
             Sheet sheet = smartsheet.SheetResources.GetSheet(sheetId);
-            long columnId = sheet.Columns[0].Id.Value;
+            var sheetColumns = sheet.Columns[0].Id;
+            Assert.IsNotNull(sheetColumns);
+            long columnId = sheetColumns.Value;
             Cell cell = new Cell.AddCellBuilder(columnId, query).SetStrict(false).Build();
             Row[] rows = new Row[] { new Row.AddRowBuilder(true, null, null, null, false).SetCells(new Cell[] { cell }).Build() };
 
@@ -70,6 +72,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
 
