@@ -3,23 +3,25 @@
     {
       "src": [
         {
+          "src": "../../smartsheet-csharp-sdk",
           "files": [
-            "**.csproj"
-          ],
-          "src": "../smartsheet-csharp-sdk"
+            "**/smartsheet-csharp-sdk-v2.csproj"
+          ]
         }
       ],
       "dest": "api",
-      "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "filter": "filterConfig.yml"
     }
   ],
   "build": {
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/index.md"
+          "api/*.{md,yml}",
+          "index.md"
+        ],
+        "exclude": [
+          "_site/**"
         ]
       }
     ],
@@ -30,28 +32,16 @@
         ]
       }
     ],
-    "overwrite": [
-      {
-        "files": [
-          "apidoc/**.md"
-        ],
-        "exclude": [
-          "obj/**",
-          "_site/**"
-        ]
-      }
-    ],
-    "dest": "_site",
-    "globalMetadataFiles": [],
-    "fileMetadataFiles": [],
+    "output": "_site",
     "template": [
-      "default"
+      "default",
+      "modern"
     ],
-    "postProcessors": [],
-    "markdownEngineName": "markdig",
-    "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "globalMetadata": {
+      "_appName": "Smartsheet C# SDK",
+      "_appTitle": "Smartsheet C# SDK",
+      "_enableSearch": true,
+      "pdf": false
+    }
   }
 }
