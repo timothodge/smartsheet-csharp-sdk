@@ -51,7 +51,7 @@ namespace Smartsheet.Api.Models
         /// <summary>
         /// Indicates whether the user has marked the Sight as a favorite
         /// </summary>
-        [Obsolete("Please use the isFavorite method in FavoriteResources instead")]
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         private bool? favorite;
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Smartsheet.Api.Models
         /// Indicates whether the user has marked the Sight as a favorite.
         /// </summary>
         /// <returns> the favorite flag </returns>
-        [Obsolete("Please use the isFavorite method in FavoriteResources instead")]
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         public Boolean? Favorite
         {
             get { return favorite; }
