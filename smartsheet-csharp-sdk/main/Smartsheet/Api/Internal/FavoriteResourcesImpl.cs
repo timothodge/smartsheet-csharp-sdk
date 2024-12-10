@@ -92,6 +92,24 @@ namespace Smartsheet.Api.Internal
         }
 
         /// <summary>
+        /// <para>Gets a single Favorite item by type and objectId. If the object is not a favorite, a 404 status will be returned.</para>
+        /// <para>It mirrors to the following Smartsheet REST API method: GET /favorites/{favoriteType}/{objectId}</para>
+        /// </summary>
+        /// <param name="type">(required): the object type</param>
+        /// <param name="objectId">(required): object ID representing a single favorited item.</param>
+        /// <returns>A single Favorite object (note that a 404 status will be returned if the object is not currently favorited).</returns>
+        /// <exception cref="System.InvalidOperationException"> if any argument is null or empty string </exception>
+        /// <exception cref="InvalidRequestException"> if there is any problem with the REST API request </exception>
+        /// <exception cref="AuthorizationException"> if there is any problem with  the REST API authorization (access token) </exception>
+        /// <exception cref="ResourceNotFoundException"> if the resource cannot be found or the object is not a favorite</exception>
+        /// <exception cref="ServiceUnavailableException"> if the REST API service is not available (possibly due to rate limiting) </exception>
+        /// <exception cref="SmartsheetException"> if there is any other error during the operation </exception>
+        public virtual Favorite IsFavorite(ObjectType type, long objectId)
+        {
+            return this.GetResource<Favorite>("favorites/" + Enum.GetName(typeof(ObjectType), type).ToLower() + "/" + objectId, typeof(Favorite));
+        }
+
+        /// <summary>
         /// <para>Removes one or multiple objects from the user’s list of Favorite items.</para>
         /// <para>objectIds must not be null or empty.</para>
         /// <para>It mirrors to the following Smartsheet REST API methods: 

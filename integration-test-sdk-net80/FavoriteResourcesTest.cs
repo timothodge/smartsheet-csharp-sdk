@@ -21,6 +21,7 @@ namespace integration_test_sdk_net80
             long workspaceId;
 
             AddFavorites(smartsheet, out sheetId, out folderId, out workspaceId);
+            IsFavorite(smartsheet, sheetId);
 
             RemoveAndListFavorites(smartsheet, sheetId, folderId, workspaceId);
 
@@ -60,6 +61,13 @@ namespace integration_test_sdk_net80
 
             IList<Favorite> favsAdded = smartsheet.FavoriteResources.AddFavorites(favs);
             Assert.IsTrue(favsAdded.Count == 3);
+        }
+
+        private static void IsFavorite(SmartsheetClient smartsheet, long sheetId)
+        {
+            Favorite fav = smartsheet.FavoriteResources.IsFavorite(ObjectType.SHEET, sheetId);
+            Assert.IsTrue(fav.ObjectId == sheetId);
+            Assert.IsTrue(fav.Type == ObjectType.SHEET);
         }
 
         private static void RemoveAllFavoritesBeforeRunningTest(SmartsheetClient smartsheet)
