@@ -32,6 +32,7 @@ namespace integration_test_sdk_net80
 
             Assert.IsTrue(newMovedFolder.Name == "SubFolder1");
 
+            Assert.IsNotNull(newMovedFolder.Id);
             long movedFolderId = newMovedFolder.Id.Value;
 
             Folder movedFolder = smartsheet.FolderResources.GetFolder(movedFolderId);
@@ -73,12 +74,14 @@ namespace integration_test_sdk_net80
         private static long CreateFolderInFolder(SmartsheetClient smartsheet, long createdFolderInHomeId, string folderName)
         {
             Folder createdFolderInFolder = smartsheet.FolderResources.CreateFolder(createdFolderInHomeId, new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInFolder.Id);
             return createdFolderInFolder.Id.Value;
         }
 
         private static long CreateFolderInHome(SmartsheetClient smartsheet, string folderName)
         {
             Folder createdFolderInHome = smartsheet.HomeResources.FolderResources.CreateFolder(new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInHome.Id);
             return createdFolderInHome.Id.Value;
         }
     }

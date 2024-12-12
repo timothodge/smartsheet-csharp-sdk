@@ -6,7 +6,7 @@ namespace integration_test_sdk_net80
     public class UserResourcesTest : TestResources
     {
         private static string email = "test+email@invalidsmartsheet.com";
-        User user;
+        User? user;
 
         [TestInitialize]
         public void SetUp()
@@ -19,6 +19,7 @@ namespace integration_test_sdk_net80
             {
                 if (tmpUser.Email == email)
                 {
+                    Assert.IsNotNull(tmpUser.Id);
                     smartsheet.UserResources.RemoveUser((long)tmpUser.Id, removeFromSharing: true);
                     break;
                 }
@@ -28,6 +29,7 @@ namespace integration_test_sdk_net80
         [TestMethod]
         public void GetMe()
         {
+            Assert.IsNotNull(smartsheet);
             UserProfile userMe = smartsheet.UserResources.GetCurrentUser();
             Assert.IsTrue(userMe.Email != null);
         }
@@ -50,26 +52,36 @@ namespace integration_test_sdk_net80
             User _user = new User.AddUserBuilder(email, true, true).Build();
             _user.FirstName = "Mister";
             _user.LastName = "CSharp";
+            Assert.IsNotNull(smartsheet);
             user = smartsheet.UserResources.AddUser(_user, true, true);
+            Assert.IsNotNull(user.Admin);
             Assert.IsTrue(user.Admin.Value);
+            Assert.IsNotNull(user.LicensedSheetCreator);
             Assert.IsTrue(user.LicensedSheetCreator.Value);
         }
 
         private void GetUser()
         {
+            Assert.IsNotNull(user?.Id);
+            Assert.IsNotNull(smartsheet);
             smartsheet.UserResources.GetUser(user.Id.Value);
         }
 
         private void UpdateUser()
         {
+            Assert.IsNotNull(user?.Id);
             User _user = new User.UpdateUserBuilder(user.Id.Value, false, false).Build();
+            Assert.IsNotNull(smartsheet);
             user = smartsheet.UserResources.UpdateUser(_user);
+            Assert.IsNotNull(user.Admin);
             Assert.IsFalse(user.Admin.Value);
+            Assert.IsNotNull(user.LicensedSheetCreator);
             Assert.IsFalse(user.LicensedSheetCreator.Value);
         }
 
         private void ListOneUser()
         {
+            Assert.IsNotNull(smartsheet);
             PaginatedResult<User> users = smartsheet.UserResources.ListUsers(new String[] { "test+email@invalidsmartsheet.com" }, null);
             Assert.AreEqual(1, users.TotalCount);
             Assert.AreEqual(users.Data[0].Email, "test+email@invalidsmartsheet.com");
@@ -77,6 +89,7 @@ namespace integration_test_sdk_net80
 
         private void ListAllUsers()
         {
+            Assert.IsNotNull(smartsheet);
             PaginatedResult<User> users = smartsheet.UserResources.ListUsers(new String[] { "test+email@invalidsmartsheet.com" }, null);
             // current user + added user
             Assert.IsTrue(users.Data.Count >= 2);
@@ -84,32 +97,40 @@ namespace integration_test_sdk_net80
 
         private void RemoveUser()
         {
+            Assert.IsNotNull(user?.Id);
+            Assert.IsNotNull(smartsheet);
             smartsheet.UserResources.RemoveUser(user.Id.Value);
         }
 
         [TestMethod]
         public void TestAlternateEmail()
         {
+            Assert.IsNotNull(smartsheet);
             UserProfile me = smartsheet.UserResources.GetCurrentUser();
 
             AlternateEmail altEmail1 = new AlternateEmail.AlternateEmailBuilder("test+altemail2@invalidsmartsheet.com").Build();
             AlternateEmail altEmail2 = new AlternateEmail.AlternateEmailBuilder("test+altemail3@invalidsmartsheet.com").Build();
+            Assert.IsNotNull(me.Id);
             smartsheet.UserResources.AddAlternateEmail(me.Id.Value, new AlternateEmail[] { altEmail1, altEmail2 });
 
             PaginatedResult<AlternateEmail> altEmails = smartsheet.UserResources.ListAlternateEmails(me.Id.Value);
             Assert.IsTrue(altEmails.Data.Count >= 2);
 
-            AlternateEmail altEmail = smartsheet.UserResources.GetAlternateEmail(me.Id.Value, altEmails.Data[0].Id.Value);
+            var altEmailsData = altEmails.Data[0].Id;
+            Assert.IsNotNull(altEmailsData);
+            AlternateEmail altEmail = smartsheet.UserResources.GetAlternateEmail(me.Id.Value, altEmailsData.Value);
             Assert.AreEqual(altEmail.Email, "test+altemail2@invalidsmartsheet.com");
 
-            smartsheet.UserResources.DeleteAlternateEmail(me.Id.Value, altEmails.Data[0].Id.Value);
-            smartsheet.UserResources.DeleteAlternateEmail(me.Id.Value, altEmails.Data[1].Id.Value);
+            smartsheet.UserResources.DeleteAlternateEmail(me.Id.Value, altEmailsData.Value);
+            smartsheet.UserResources.DeleteAlternateEmail(me.Id.Value, altEmailsData.Value);
         }
 
         [TestMethod]
         public void AddProfileImage()
         {
+            Assert.IsNotNull(smartsheet);
             UserProfile me = smartsheet.UserResources.GetCurrentUser();
+            Assert.IsNotNull(me.Id);
             smartsheet.UserResources.AddProfileImage(me.Id.Value, "../../../../integration-test-sdk-net80/profileimage.png", "image/png");
             me = smartsheet.UserResources.GetCurrentUser();
             Assert.IsNotNull(me.ProfileImage.ImageId);

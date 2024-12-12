@@ -110,7 +110,7 @@ namespace integration_test_sdk_net80
             Assert.IsTrue(attachment.Name == "TestFile.txt");
 
             VerifyAttachmentContent(smartsheet, sheetId, attachment);
-
+            Assert.IsNotNull(attachment.Id);
             return attachment.Id.Value;
         }
 
@@ -119,7 +119,9 @@ namespace integration_test_sdk_net80
             Row[] rows = new Row[] { new Row.AddRowBuilder(true, null, null, null, null).Build() };
             smartsheet.SheetResources.RowResources.AddRows(sheetId, rows);
             Sheet sheet = smartsheet.SheetResources.GetSheet(sheetId);
-            long rowId = sheet.Rows[0].Id.Value;
+            var sheetRows = sheet.Rows[0].Id;
+            Assert.IsNotNull(sheetRows);
+            long rowId = sheetRows.Value;
             Attachment attachment = smartsheet.SheetResources.RowResources.AttachmentResources.AttachFile(sheetId, rowId, path);
             Assert.IsTrue(attachment.AttachmentType == AttachmentType.FILE);
             Assert.IsTrue(attachment.Name == "TestFile.txt");
@@ -137,7 +139,9 @@ namespace integration_test_sdk_net80
         {
             Discussion discussionToCreate = new Discussion.CreateDiscussionBuilder("A Disc", new Comment.AddCommentBuilder("A comm").Build()).Build();
             Discussion discussionCreated = smartsheet.SheetResources.DiscussionResources.CreateDiscussion(sheetId, discussionToCreate);
-            long commentId = discussionCreated.Comments[0].Id.Value;
+            var comment = discussionCreated.Comments[0].Id;
+            Assert.IsNotNull(comment);
+            long commentId = comment.Value;
             Attachment attachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachFile(sheetId, commentId, path, "text/plain");
             Assert.IsTrue(attachment.AttachmentType == AttachmentType.FILE);
             Assert.IsTrue(attachment.Name == "TestFile.txt");
@@ -148,6 +152,7 @@ namespace integration_test_sdk_net80
             attachment = smartsheet.SheetResources.CommentResources.AttachmentResources.AttachUrl(sheetId, commentId, attachToResource);
             Assert.IsTrue(attachment.Url == "http://www.google.com");
 
+            Assert.IsNotNull(discussionCreated.Id);
             return discussionCreated.Id.Value;
         }
 
@@ -161,11 +166,13 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
 
         private void VerifyAttachmentContent(SmartsheetClient smartsheet, long sheetId, Attachment attachment)
         {
+            Assert.IsNotNull(attachment.Id);
             attachment = smartsheet.SheetResources.AttachmentResources.GetAttachment(sheetId, attachment.Id.Value);
 
             var request = new RestRequest(attachment.Url);

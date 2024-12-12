@@ -14,7 +14,9 @@ namespace integration_test_sdk_net80
             long sheetId = CreateSheet(smartsheet);
 
             PaginatedResult<Column> columnsResult = smartsheet.SheetResources.ColumnResources.ListColumns(sheetId);
-            long columnId = columnsResult.Data[0].Id.Value;
+            var columnsResultDataId = columnsResult.Data[0].Id;
+            Assert.IsNotNull(columnsResultDataId);
+            long columnId = columnsResultDataId.Value;
 
             Cell[] cellsToAdd = new Cell[] { new Cell.AddCellBuilder(columnId, true).SetValue("hello").SetStrict(false).Build() };
 
@@ -58,7 +60,9 @@ namespace integration_test_sdk_net80
 
         private static void CopyRowToCreatedSheet(SmartsheetClient smartsheet, long sheetId, long rowId)
         {
-            long tempSheetId = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("tempSheet", new Column[] { new Column.CreateSheetColumnBuilder("col1", true, ColumnType.TEXT_NUMBER).Build() }).Build()).Id.Value;
+            var tempSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("tempSheet", new Column[] { new Column.CreateSheetColumnBuilder("col1", true, ColumnType.TEXT_NUMBER).Build() }).Build()).Id;
+            Assert.IsNotNull(tempSheet);
+            long tempSheetId = tempSheet.Value;
             CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = tempSheetId };
             CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { rowId }, To = destination };
             CopyOrMoveRowResult result = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, false);
@@ -75,6 +79,7 @@ namespace integration_test_sdk_net80
             IList<long> rowIds = new List<long>();
             foreach (Row row in rows)
             {
+                Assert.IsNotNull(row.Id);
                 rowIds.Add(row.Id.Value);
             }
             return rowIds;
@@ -90,6 +95,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

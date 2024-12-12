@@ -71,6 +71,7 @@ namespace integration_test_sdk_net80
                 ObjectType type = ObjectType.FOLDER;
                 foreach (Favorite fav in favsToDelete.Data)
                 {
+                    Assert.IsNotNull(fav.ObjectId);
                     switch (i)
                     {
                         case 0:
@@ -130,6 +131,7 @@ namespace integration_test_sdk_net80
         private static long CreateWorkspace(SmartsheetClient smartsheet)
         {
             Workspace ws = smartsheet.WorkspaceResources.CreateWorkspace(new Workspace.CreateWorkspaceBuilder("workspace").Build());
+            Assert.IsNotNull(ws.Id);
             long workspaceId = ws.Id.Value;
             return workspaceId;
         }
@@ -137,6 +139,7 @@ namespace integration_test_sdk_net80
         private static long CreateFolder(SmartsheetClient smartsheet)
         {
             Folder folder = smartsheet.HomeResources.FolderResources.CreateFolder(new Folder.CreateFolderBuilder("folder").Build());
+            Assert.IsNotNull(folder.Id);
             long folderId = folder.Id.Value;
             return folderId;
         }
@@ -148,6 +151,7 @@ namespace integration_test_sdk_net80
             new Group.CreateGroupBuilder("a group", "this is a group").SetMembers(new GroupMember[] { member }).Build());
 
             Assert.IsTrue(group.Name == "a group");
+            Assert.IsNotNull(group.Id);
             return group.Id.Value;
         }
 
@@ -161,6 +165,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

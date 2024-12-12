@@ -14,7 +14,9 @@ namespace integration_test_sdk_net80
             long sheetId = CreateSheet(smartsheet);
 
             PaginatedResult<Column> columnsResult = smartsheet.SheetResources.ColumnResources.ListColumns(sheetId);
-            long columnId = columnsResult.Data[0].Id.Value;
+            var columnsResultFirst = columnsResult.Data[0].Id;
+            Assert.IsNotNull(columnsResultFirst);
+            long columnId = columnsResultFirst.Value;
 
             Cell[] cellsToAdd = new Cell[] { new Cell.AddCellBuilder(columnId, true).SetValue("hello").SetStrict(false).Build() };
 
@@ -33,7 +35,10 @@ namespace integration_test_sdk_net80
             Row row = new Row.AddRowBuilder(true, null, null, null, null).SetCells(cellsToAdd).Build();
             IList<Row> rows = smartsheet.SheetResources.RowResources.AddRows(sheetId, new Row[] { row });
             Assert.IsTrue(rows.Count == 1);
-            long rowId = rows[0].Id.Value;
+
+            var rowsId = rows[0].Id;
+            Assert.IsNotNull(rowsId);
+            long rowId = rowsId.Value;
             bool foundValue = false;
             foreach (Cell cell in rows[0].Cells)
             {
@@ -58,6 +63,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

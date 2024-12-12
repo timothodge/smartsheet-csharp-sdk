@@ -12,6 +12,8 @@ namespace mock_api_test_sdk_net80
         {
             SmartsheetClient ss = HelperFunctions.SetupClient("List Automation Rules");
             PaginatedResult<AutomationRule> automationRules = ss.SheetResources.AutomationRuleResources.ListAutomationRules(324);
+
+            Assert.IsNotNull(automationRules.TotalCount);
             Assert.AreEqual(2, (long)automationRules.TotalCount);
         }
 
@@ -20,6 +22,7 @@ namespace mock_api_test_sdk_net80
         {
             SmartsheetClient ss = HelperFunctions.SetupClient("Get Automation Rule");
             AutomationRule automationRule = ss.SheetResources.AutomationRuleResources.GetAutomationRule(324, 284);
+            Assert.IsNotNull(automationRule.Id);
             Assert.AreEqual(284, (long)automationRule.Id);
         }
 

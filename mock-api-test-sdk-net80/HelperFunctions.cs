@@ -37,7 +37,9 @@ namespace mock_api_test_sdk_net80
             }
             catch (AssertFailedException ex)
             {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
             catch (Exception ex)
             {

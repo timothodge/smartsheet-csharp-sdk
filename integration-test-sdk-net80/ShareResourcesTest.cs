@@ -76,6 +76,7 @@ namespace integration_test_sdk_net80
         private static long CreateWorkspace(SmartsheetClient smartsheet)
         {
             Workspace ws = smartsheet.WorkspaceResources.CreateWorkspace(new Workspace.CreateWorkspaceBuilder("workspace").Build());
+            Assert.IsNotNull(ws.Id);
             long workspaceId = ws.Id.Value;
             return workspaceId;
         }
@@ -84,7 +85,9 @@ namespace integration_test_sdk_net80
         {
             PaginatedResult<Report> reportResult = smartsheet.ReportResources.ListReports(null);
             Assert.IsTrue(reportResult.Data.Count > 0);
-            long reportId = reportResult.Data[0].Id.Value;
+            var reportResultData = reportResult.Data[0];
+            Assert.IsNotNull(reportResultData.Id);
+            long reportId = reportResultData.Id.Value;
             return reportId;
         }
 
@@ -95,6 +98,7 @@ namespace integration_test_sdk_net80
             new Group.CreateGroupBuilder("a group", "this is a group").SetMembers(new GroupMember[] { member }).Build());
 
             Assert.IsTrue(group.Name == "a group");
+            Assert.IsNotNull(group.Id);
             return group.Id.Value;
         }
 
@@ -108,6 +112,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }
