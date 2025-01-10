@@ -114,6 +114,7 @@ namespace integration_test_sdk_net80
         {
             Folder createdFolderInFolder = smartsheet.FolderResources.CreateFolder(createdFolderInHomeId, new Folder.CreateFolderBuilder(folderInFolderName).Build());
             Assert.IsTrue(createdFolderInFolder.Name == folderInFolderName);
+            Assert.IsNotNull(createdFolderInFolder.Id);
             return createdFolderInFolder.Id.Value;
         }
 
@@ -121,6 +122,7 @@ namespace integration_test_sdk_net80
         {
             Folder createdFolderInHome = smartsheet.HomeResources.FolderResources.CreateFolder(new Folder.CreateFolderBuilder(folderInHomeName).Build());
             Assert.IsTrue(createdFolderInHome.Name == folderInHomeName);
+            Assert.IsNotNull(createdFolderInHome.Id);
             return createdFolderInHome.Id.Value;
         }
     }

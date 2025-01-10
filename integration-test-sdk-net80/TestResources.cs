@@ -5,7 +5,7 @@ namespace integration_test_sdk_net80
 {
     public class TestResources
     {
-        protected SmartsheetClient smartsheet;
+        protected SmartsheetClient? smartsheet;
 
         public SmartsheetClient CreateClient()
         {
@@ -26,10 +26,14 @@ namespace integration_test_sdk_net80
 
         public Sheet CreateSheet()
         {
+            Assert.IsNotNull(smartsheet);
             Sheet sheet = smartsheet.SheetResources.CreateSheet(CreateSheetObject());
-            Cell cellA = new Cell.AddCellBuilder(sheet.Columns[1].Id.Value, null).SetValue("A").SetStrict(false).Build();
-            Cell cellB = new Cell.AddCellBuilder(sheet.Columns[1].Id.Value, null).SetValue("B").SetStrict(false).Build();
-            Cell cellC = new Cell.AddCellBuilder(sheet.Columns[1].Id.Value, null).SetValue("C").SetStrict(false).Build();
+            Assert.IsNotNull(sheet.Id);
+            var sheetColumns = sheet.Columns[1].Id;
+            Assert.IsNotNull(sheetColumns);
+            Cell cellA = new Cell.AddCellBuilder(sheetColumns.Value, null).SetValue("A").SetStrict(false).Build();
+            Cell cellB = new Cell.AddCellBuilder(sheetColumns.Value, null).SetValue("B").SetStrict(false).Build();
+            Cell cellC = new Cell.AddCellBuilder(sheetColumns.Value, null).SetValue("C").SetStrict(false).Build();
             Row rowA = new Row.AddRowBuilder(true, null, null, null, null).SetCells(new Cell[] { cellA }).Build();
             Row rowB = new Row.AddRowBuilder(true, null, null, null, null).SetCells(new Cell[] { cellB }).Build();
             Row rowC = new Row.AddRowBuilder(true, null, null, null, null).SetCells(new Cell[] { cellC }).Build();
@@ -40,28 +44,33 @@ namespace integration_test_sdk_net80
         public Folder CreateFolderHome()
         {
             Folder folder = new Folder.CreateFolderBuilder("CSharp SDK Test").Build();
+            Assert.IsNotNull(smartsheet);
             Folder newFolderHome = smartsheet.HomeResources.FolderResources.CreateFolder(folder);
             return newFolderHome;
         }
 
         public Workspace CreateWorkspace(string name)
         {
+            Assert.IsNotNull(smartsheet);
             Workspace newWorkspace = smartsheet.WorkspaceResources.CreateWorkspace(new Workspace.CreateWorkspaceBuilder(name).Build());
             return newWorkspace;
         }
 
         public void DeleteFolder(long folderId)
         {
+            Assert.IsNotNull(smartsheet);
             smartsheet.FolderResources.DeleteFolder(folderId);
         }
 
         public void DeleteSheet(long sheetId)
         {
+            Assert.IsNotNull(smartsheet);
             smartsheet.SheetResources.DeleteSheet(sheetId);
         }
 
         public void DeleteWorkspace(long workspaceId)
         {
+            Assert.IsNotNull(smartsheet);
             smartsheet.WorkspaceResources.DeleteWorkspace(workspaceId);
         }
     }

@@ -10,19 +10,20 @@ namespace integration_test_sdk_net80
         public void TestRowDeleteSendResources()
         {
             SmartsheetClient smartsheet = new SmartsheetBuilder().SetMaxRetryTimeout(30000).Build();
-
-            long templateId = smartsheet.TemplateResources.ListPublicTemplates().Data[0].Id.Value;
+            long templateId = smartsheet.TemplateResources.ListPublicTemplates().Data[0].Id.GetValueOrDefault();
+            Assert.IsNotNull(templateId);
 
             long sheetId = CreateSheetFromTemplate(smartsheet, templateId);
 
             PaginatedResult<Column> columnsResult = smartsheet.SheetResources.ColumnResources.ListColumns(sheetId);
-            long columnId = columnsResult.Data[0].Id.Value;
+            long columnId = columnsResult.Data[0].Id.GetValueOrDefault();
+            Assert.IsNotNull(columnId);
 
             Cell[] cellsToAdd = new Cell[] { new Cell.AddCellBuilder(columnId, true).SetValue("hello").SetStrict(false).Build() };
 
             IList<long> rowIds = AddRows(smartsheet, sheetId, columnId, cellsToAdd);
 
-            MultiRowEmail multiEmail = new MultiRowEmail
+            MultiRowEmail multiEmail = new MultiRowEmail 
             {
                 RowIds = rowIds,
                 IncludeAttachments = true,
@@ -57,7 +58,9 @@ namespace integration_test_sdk_net80
 
         private static void CopyRowToCreatedSheet(SmartsheetClient smartsheet, long sheetId, long rowId)
         {
-            long tempSheetId = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("tempSheet", new Column[] { new Column.CreateSheetColumnBuilder("col1", true, ColumnType.TEXT_NUMBER).Build() }).Build()).Id.Value;
+            var tempSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("tempSheet", new Column[] { new Column.CreateSheetColumnBuilder("col1", true, ColumnType.TEXT_NUMBER).Build() }).Build()).Id;
+            Assert.IsNotNull(tempSheet);
+            long tempSheetId = tempSheet.Value;
             CopyOrMoveRowDestination destination = new CopyOrMoveRowDestination { SheetId = tempSheetId };
             CopyOrMoveRowDirective directive = new CopyOrMoveRowDirective { RowIds = new long[] { rowId }, To = destination };
             CopyOrMoveRowResult result = smartsheet.SheetResources.RowResources.CopyRowsToAnotherSheet(sheetId, directive, new CopyRowInclusion[] { CopyRowInclusion.CHILDREN }, false);
@@ -74,6 +77,7 @@ namespace integration_test_sdk_net80
             IList<long> rowIds = new List<long>();
             foreach (Row row in rows)
             {
+                Assert.IsNotNull(row.Id);
                 rowIds.Add(row.Id.Value);
             }
             return rowIds;
@@ -84,6 +88,7 @@ namespace integration_test_sdk_net80
         {
             // Create a new sheet off of that template.
             Sheet newSheet = smartsheet.SheetResources.CreateSheetFromTemplate(new Sheet.CreateSheetFromTemplateBuilder("New Sheet", templateId).Build(), new TemplateInclusion[] { TemplateInclusion.DATA, TemplateInclusion.RULE_RECIPIENTS, TemplateInclusion.RULES });
+            Assert.IsNotNull(newSheet.Id);
             return newSheet.Id.Value;
         }
     }

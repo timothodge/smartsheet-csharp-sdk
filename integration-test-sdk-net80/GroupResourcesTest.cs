@@ -95,6 +95,7 @@ namespace integration_test_sdk_net80
             Group group = smartsheet.GroupResources.CreateGroup(new Group.CreateGroupBuilder("a group", "this is a group").SetMembers(new GroupMember[] { member }).Build());
 
             Assert.IsTrue(group.Name == "a group");
+            Assert.IsNotNull(group.Id);
             return group.Id.Value;
         }
     }

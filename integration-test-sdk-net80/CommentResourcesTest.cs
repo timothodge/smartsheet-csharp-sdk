@@ -46,6 +46,7 @@ namespace integration_test_sdk_net80
         private static void GetComment(SmartsheetClient smartsheet, long sheetId, long commentId)
         {
             Comment getComment = smartsheet.SheetResources.CommentResources.GetComment(sheetId, commentId);
+            Assert.IsNotNull(getComment.Id);
             Assert.IsTrue(getComment.Id.Value == commentId);
             Assert.IsTrue(getComment.Text == "commented2");
         }
@@ -58,8 +59,10 @@ namespace integration_test_sdk_net80
             Assert.IsTrue(addedCommentWithAttachment.Text == "commented2");
             Assert.IsTrue(addedCommentWithAttachment.Attachments.Count == 1);
             Assert.IsTrue(addedCommentWithAttachment.Attachments[0].Name == "TestFile.txt");
-            long commentId = addedCommentWithAttachment.Id.Value;
-            return commentId;
+
+            var commentId = addedCommentWithAttachment.Id;
+            Assert.IsNotNull(commentId);
+            return commentId.Value;
         }
 
         private static void AddCommentWithoutAttachment(SmartsheetClient smartsheet, long sheetId, long discussionId)
@@ -78,8 +81,9 @@ namespace integration_test_sdk_net80
             Discussion discussion2 = smartsheet.SheetResources.DiscussionResources.CreateDiscussionWithAttachment(sheetId, new Discussion.CreateDiscussionBuilder("a discussion", commentToAdd).Build(), path, null);
             Assert.IsTrue(discussion2.Comments[0].Attachments[0].Name == "TestFile.txt");
             
-            long discussionId = discussion.Id.Value;
-            return discussionId;
+            var discussionId = discussion.Id;
+            Assert.IsNotNull(discussionId);
+            return discussionId.Value;
         }
         private static long CreateSheet(SmartsheetClient smartsheet)
         {
@@ -91,6 +95,7 @@ namespace integration_test_sdk_net80
             Sheet createdSheet = smartsheet.SheetResources.CreateSheet(new Sheet.CreateSheetBuilder("new sheet", columnsToCreate).Build());
             Assert.IsTrue(createdSheet.Columns.Count == 3);
             Assert.IsTrue(createdSheet.Columns[1].Title == "col 2");
+            Assert.IsNotNull(createdSheet.Id);
             return createdSheet.Id.Value;
         }
     }

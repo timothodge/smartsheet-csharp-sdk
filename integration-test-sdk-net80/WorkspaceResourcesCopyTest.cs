@@ -20,6 +20,7 @@ namespace integration_test_sdk_net80
             // Folder2-----Workspace1Copy
 
             Workspace workspace = smartsheet.WorkspaceResources.CreateWorkspace(new Workspace.CreateWorkspaceBuilder("Workspace1").Build());
+            Assert.IsNotNull(workspace.Id);
             long workspaceId = workspace.Id.Value;
 
             ContainerDestination destination = new ContainerDestination
@@ -30,6 +31,7 @@ namespace integration_test_sdk_net80
 
             Assert.IsTrue(newCopiedWorkspace.Name == "Workspace1Copy");
 
+            Assert.IsNotNull(newCopiedWorkspace.Id);
             long copiedWorkspaceId = newCopiedWorkspace.Id.Value;
 
             Workspace copiedWorkspace = smartsheet.WorkspaceResources.GetWorkspace(copiedWorkspaceId);
@@ -56,12 +58,14 @@ namespace integration_test_sdk_net80
         private static long CreateWorkspaceInFolder(SmartsheetClient smartsheet, long folderId, string folderName)
         {
             Folder createdFolderInFolder = smartsheet.WorkspaceResources.FolderResources.CreateFolder(folderId, new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInFolder.Id);
             return createdFolderInFolder.Id.Value;
         }
 
         private static long CreateFolderInHome(SmartsheetClient smartsheet, string folderName)
         {
             Folder createdFolderInHome = smartsheet.HomeResources.FolderResources.CreateFolder(new Folder.CreateFolderBuilder(folderName).Build());
+            Assert.IsNotNull(createdFolderInHome.Id);
             return createdFolderInHome.Id.Value;
         }
     }

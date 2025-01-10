@@ -5,8 +5,8 @@ namespace integration_test_sdk_net80
     [TestClass]
     public class SheetSummaryResourcesTest : TestResources
     {
-        private Sheet sheet;
-        private IList<SummaryField> asf;
+        private Sheet? sheet;
+        private IList<SummaryField>? asf;
 
         [TestInitialize]
         public void TestInitialize()
@@ -18,6 +18,7 @@ namespace integration_test_sdk_net80
         [TestCleanup]
         public void TestTeardown()
         {
+            Assert.IsNotNull(sheet?.Id);
             DeleteSheet(sheet.Id.Value);
         }
 
@@ -48,6 +49,8 @@ namespace integration_test_sdk_net80
             sf1.Type = ColumnType.CHECKBOX;
             sf1.ObjectValue = new BooleanObjectValue(false);
 
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             asf = smartsheet.SheetResources.SummaryResources.AddSheetSummaryFields(sheet.Id.Value,
                 new List<SummaryField> { sf, sf1 }, true);
 
@@ -56,6 +59,8 @@ namespace integration_test_sdk_net80
 
         private void TestGetSheetSummary()
         {
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             SheetSummary sheetSummary = smartsheet.SheetResources.SummaryResources.GetSheetSummary(sheet.Id.Value,
                 new List<SummaryFieldInclusion> { SummaryFieldInclusion.FORMAT, SummaryFieldInclusion.WRITER_INFO },
                 new List<SummaryFieldExclusion> { SummaryFieldExclusion.DISPLAY_VALUE });
@@ -78,6 +83,8 @@ namespace integration_test_sdk_net80
             sf1.Type = ColumnType.TEXT_NUMBER;
             sf1.ObjectValue = new StringObjectValue("Sammy Smart");
 
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             BulkItemResult<SummaryField> asf = smartsheet.SheetResources.SummaryResources.AddSheetSummaryFieldsAllowPartialSuccess(
                 sheet.Id.Value,  new List<SummaryField> { sf, sf1 });
 
@@ -86,6 +93,8 @@ namespace integration_test_sdk_net80
 
         private void TestGetSheetSummaryFields()
         {
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             PaginatedResult<SummaryField> fields = smartsheet.SheetResources.SummaryResources.GetSheetSummaryFields(sheet.Id.Value,
                 new List<SummaryFieldInclusion> { SummaryFieldInclusion.WRITER_INFO },
                 new List<SummaryFieldExclusion> { SummaryFieldExclusion.DISPLAY_VALUE });
@@ -98,6 +107,7 @@ namespace integration_test_sdk_net80
         private void TestUpdateSheetSummaryFields()
         {
             SummaryField sf = new SummaryField();
+            Assert.IsNotNull(asf);
             sf.Id = asf[0].Id;
             sf.Title = "Hellooo World!";
 
@@ -105,6 +115,8 @@ namespace integration_test_sdk_net80
             sf1.Id = asf[1].Id;
             sf1.Title = "Eeek!";
 
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             IList<SummaryField> usf = smartsheet.SheetResources.SummaryResources.UpdateSheetSummaryFields(sheet.Id.Value,
                 new List<SummaryField> { sf, sf1 });
         }
@@ -112,6 +124,7 @@ namespace integration_test_sdk_net80
         private void TestUpdateSheetSummaryFieldsWithPartialSuccess()
         {
             SummaryField sf = new SummaryField();
+            Assert.IsNotNull(asf);
             sf.Id = asf[0].Id;
             sf.Title = "Hello World!";
 
@@ -119,6 +132,8 @@ namespace integration_test_sdk_net80
             sf1.Id = 123;
             sf1.Title = "Eeek!";
 
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(smartsheet);
             BulkItemResult<SummaryField> usf = smartsheet.SheetResources.SummaryResources.UpdateSheetSummaryFieldsAllowPartialSuccess(sheet.Id.Value,
                 new List<SummaryField> { sf, sf1 }, true);
 
@@ -127,15 +142,25 @@ namespace integration_test_sdk_net80
 
         private void TestAddSheetSummaryFieldImage()
         {
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(asf);
+            var addSheetSummaryField = asf[0].Id;
+            Assert.IsNotNull(addSheetSummaryField);
+            Assert.IsNotNull(smartsheet);
             SummaryField summaryField = smartsheet.SheetResources.SummaryResources.AddSheetSummaryFieldImage(sheet.Id.Value,
-                asf[0].Id.Value, "D:\\Smartsheet\\vHepGiJaeL6GPOX3wAx8yaxD75ym5eAbk0GB-MSz0gc.png", null, "alt text");
+                addSheetSummaryField.Value, "D:\\Smartsheet\\vHepGiJaeL6GPOX3wAx8yaxD75ym5eAbk0GB-MSz0gc.png", null, "alt text");
             Assert.IsInstanceOfType(summaryField.Image, typeof(Image));
         }
 
         private void TestDeleteSheetSummaryFields()
         {
+            Assert.IsNotNull(sheet?.Id);
+            Assert.IsNotNull(asf);
+            var addSheetSummaryField = asf[0].Id;
+            Assert.IsNotNull(addSheetSummaryField);
+            Assert.IsNotNull(smartsheet);
             IList<long> delIds = smartsheet.SheetResources.SummaryResources.DeleteSheetSummaryFields(sheet.Id.Value,
-                new List<long> { asf[0].Id.Value, 123L }, true);
+                new List<long> { addSheetSummaryField.Value, 123L }, true);
             Assert.AreEqual(delIds.Count, 1);
         }
     }

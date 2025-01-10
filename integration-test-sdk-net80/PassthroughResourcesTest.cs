@@ -23,20 +23,24 @@ namespace integration_test_sdk_net80
 
             long id = 0;
             JsonReader reader = new JsonTextReader(new StringReader(jsonResponse));
+
             while(id == 0 && reader.Read()) {
                 switch (reader.TokenType)
                 {
                     case JsonToken.StartObject:
                         break;
                     case JsonToken.PropertyName:
-                        if(reader.Value.ToString().Contains("message")) 
+                        var value = reader.Value?.ToString();
+                        Assert.IsNotNull(value);
+                        if(value.Contains("message")) 
                         {
-                            string message = reader.ReadAsString();
+                            string message = reader.ReadAsString() ?? string.Empty;
                             Assert.AreEqual(message, "SUCCESS");
                         }
-                        else if(reader.Value.ToString().Contains("id"))
+                        else if(value.Contains("id"))
                         {
                             reader.Read();
+                            Assert.IsNotNull(reader.Value);
                             id = (long)reader.Value;
                         }
                         else
@@ -54,9 +58,10 @@ namespace integration_test_sdk_net80
             IDictionary<string, string> parameters = new Dictionary<string,string>();
             parameters.Add("include", "objectValue");
             jsonResponse = smartsheet.PassthroughResources.GetRequest("sheets/" + id, parameters);
-
-            string name = null;
             reader = new JsonTextReader(new StringReader(jsonResponse));
+            Assert.IsNotNull(reader.Value);
+
+            string? name = null;
             while (name == null && reader.Read())
             {
                 switch (reader.TokenType)
@@ -64,9 +69,14 @@ namespace integration_test_sdk_net80
                     case JsonToken.StartObject:
                         break;
                     case JsonToken.PropertyName:
-                        if (reader.Value.ToString().Contains("name"))
+
+                        var value = reader.Value.ToString();
+                        Assert.IsNotNull(value);
+                        if (value.Contains("name"))
                         {
-                            name = reader.ReadAsString();
+                            var nameValue = reader.ReadAsString();
+                            Assert.IsNotNull(nameValue);
+                            name = nameValue;
                         }
                         else
                         {
@@ -92,7 +102,7 @@ namespace integration_test_sdk_net80
                     case JsonToken.StartObject:
                         break;
                     case JsonToken.PropertyName:
-                        if (reader.Value.ToString().Contains("name"))
+                        if ((reader.Value?.ToString() ?? string.Empty) .Contains("name"))
                         {
                             name = reader.ReadAsString();
                         }
@@ -119,9 +129,9 @@ namespace integration_test_sdk_net80
                     case JsonToken.StartObject:
                         break;
                     case JsonToken.PropertyName:
-                        if (reader.Value.ToString().Contains("message"))
+                        if ((reader.Value?.ToString() ?? string.Empty).Contains("message"))
                         {
-                            string message = reader.ReadAsString();
+                            string? message = reader.ReadAsString();
                             Assert.AreEqual(message, "SUCCESS");
                             success = true;
                         }
