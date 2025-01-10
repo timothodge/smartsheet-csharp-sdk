@@ -91,6 +91,7 @@ namespace Smartsheet.Api.Models
         /// <summary>
         /// Identifies whether the sheet is marked as a favorite
         /// </summary>
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         private bool? favorite;
 
         /// <summary>
@@ -295,6 +296,7 @@ namespace Smartsheet.Api.Models
         /// Returned only if the user has marked this sheet as a favorite in their Home tab (value = “true”).
         /// </summary>
         /// <returns> true if marked as favorite, false otherwise </returns>
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         public bool? Favorite
         {
             get { return favorite; }

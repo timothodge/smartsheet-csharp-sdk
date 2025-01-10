@@ -29,6 +29,7 @@ namespace Smartsheet.Api.Models
         /// <summary>
         /// Represents whether a folder is marked as a favorite in the Home folder
         /// </summary>
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         private bool? favorite;
 
         /// <summary>
@@ -65,6 +66,7 @@ namespace Smartsheet.Api.Models
         /// Gets and sets whether this folder is favorited.
         /// </summary>
         /// <returns> the sheets </returns>
+        [Obsolete("Please use the IsFavorite method in FavoriteResources instead")]
         public bool? Favorite
         {
             get { return favorite; }

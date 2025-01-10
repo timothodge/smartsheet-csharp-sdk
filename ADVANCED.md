@@ -80,7 +80,7 @@ A more complete example can be found in the Integration test file, `PassthroughR
 ## Testing
 Integration tests:
 1. Your environment must contain a variable named SMARTSHEET_ACCESS_TOKEN containing an api access token in order to proceed with the tests.
-2. Run the tests within the from within Visual Studio.
+2. Run the tests from within Visual Studio.
 
 Mock API tests:
 1. Clone the [Smartsheet sdk tests](https://github.com/smartsheet-platform/smartsheet-sdk-tests) repo and follow the instructions from the readme to start the mock server.
